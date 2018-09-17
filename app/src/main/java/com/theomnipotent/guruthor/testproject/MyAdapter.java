@@ -70,34 +70,6 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             playButton = v.findViewById(R.id.playButton);
             pauseButton = v.findViewById(R.id.pauseButton);
 
-            Uri uri = Uri.parse("android.resource://" + MainActivity.context.getPackageName() + "/" + R.raw.audio_file);
-            mediaPlayer = MediaPlayer.create(MainActivity.context, uri);
-            mSeekBar.setMax(mediaPlayer.getDuration());
-
-            new Timer().scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    mSeekBar.setProgress(mediaPlayer.getCurrentPosition());
-                }
-            }, 0, 100);
-
-            mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    mediaPlayer.seekTo(progress);
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-
-                }
-            });
-
             playButton.setOnClickListener(new ImageButton.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -162,23 +134,33 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        Uri uri;
+        String filePath;
         switch (holder.getItemViewType()) {
             case Constants.TYPE_AUDIO:
                 MyAudioViewHolder audioViewHolder = (MyAudioViewHolder) holder;
+//                filePath = ((AudioBean) mDataset.get(position)).getFilePath();
+                uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + R.raw.audio_file);
+                audioViewHolder.mediaPlayer = MediaPlayer.create(MainActivity.context, uri);
+                audioViewHolder.mSeekBar.setMax(audioViewHolder.mediaPlayer.getDuration());
+                runTimer(audioViewHolder);
                 break;
-            //TO-DO Video and Audio playback
             case Constants.TYPE_VIDEO:
                 MyVideoViewHolder videoViewHolder = (MyVideoViewHolder) holder;
-                videoViewHolder.mVideoView.setVideoURI(Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + R.raw.video_file));
+                filePath = ((VideoBean) mDataset.get(position)).getFilePath();
+                uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + R.raw.video_file);
+                videoViewHolder.mVideoView.setVideoURI(uri);
                 break;
             case Constants.TYPE_IMAGE:
                 MyImageViewHolder imageViewHolder = (MyImageViewHolder) holder;
-                Uri uri = Uri.parse(((ImageBean) mDataset.get(position)).getFilePath());
+                filePath = ((ImageBean) mDataset.get(position)).getFilePath();
+                uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + R.drawable.ic_menu_gallery);
                 imageViewHolder.mImageView.setImageURI(uri);
                 break;
             default:
                 MyTextViewHolder textViewHolder = (MyTextViewHolder) holder;
-                textViewHolder.mTextView.setText(mDataset.get(position).toString());
+                String text = ((TextBean) mDataset.get(position)).getText();
+                textViewHolder.mTextView.setText(text);
                 break;
         }
     }
@@ -189,4 +171,30 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mDataset.size();
     }
 
+    public void runTimer(final MyAudioViewHolder audioViewHolder1) {
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                audioViewHolder1.mSeekBar.setProgress(audioViewHolder1.mediaPlayer.getCurrentPosition());
+            }
+        }, 0, 100);
+        audioViewHolder1.mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    audioViewHolder1.mediaPlayer.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
 }

@@ -17,12 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -77,11 +73,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected Integer doInBackground(Integer... positions) {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                int x = new Random().nextInt(3);
+                int x = new Random().nextInt(4);
                 switch (x) {
                     case 0:
                         AudioBean aBean = new AudioBean();
