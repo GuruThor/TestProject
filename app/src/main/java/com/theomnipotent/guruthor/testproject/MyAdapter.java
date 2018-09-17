@@ -19,11 +19,11 @@ import java.util.TimerTask;
 
 public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<BaseBean> mDataset;
-//    MediaController mMediaController = new MediaController();
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
+
     public static class MyTextViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
@@ -45,6 +45,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+
     public static class MyVideoViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public VideoView mVideoView;
@@ -54,6 +55,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mVideoView = v.findViewById(R.id.video_view);
         }
     }
+
 
     public static class MyAudioViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
