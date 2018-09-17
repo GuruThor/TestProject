@@ -1,5 +1,6 @@
 package com.theomnipotent.guruthor.testproject;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -63,16 +64,18 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static class MyAudioViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         MediaPlayer mediaPlayer;
-        public SeekBar mSeekBar;
-        public ImageButton playButton;
-        public ImageButton pauseButton;
-        public ImageButton shortSkipBackward;
-        public ImageButton shortSkipForward;
-        public ImageButton variableSkipBackward;
-        public ImageButton variableSkipForward;
+        SeekBar mSeekBar;
+        ImageButton playButton;
+        ImageButton pauseButton;
+        ImageButton shortSkipBackward;
+        ImageButton shortSkipForward;
+        ImageButton variableSkipBackward;
+        ImageButton variableSkipForward;
+        View view;
 
         MyAudioViewHolder(View v) {
             super(v);
+            view = v;
             mSeekBar = v.findViewById(R.id.scrubber);
             playButton = v.findViewById(R.id.playButton);
             pauseButton = v.findViewById(R.id.pauseButton);
@@ -81,47 +84,6 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             variableSkipBackward = v.findViewById(R.id.variableSkipBackward);
             variableSkipForward = v.findViewById(R.id.variableSkipForward);
 
-            playButton.setOnClickListener(new ImageButton.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mediaPlayer.start();
-                }
-            });
-
-            pauseButton.setOnClickListener(new ImageButton.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mediaPlayer.pause();
-                }
-            });
-
-            variableSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - (mediaPlayer.getDuration()*VARIABLE_SKIP_PERCENT)/100);
-                }
-            });
-
-            variableSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + (mediaPlayer.getDuration()*VARIABLE_SKIP_PERCENT)/100);
-                }
-            });
-
-            shortSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - SHORT_SKIP);
-                }
-            });
-
-            shortSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + SHORT_SKIP);
-                }
-            });
         }
     }
 
@@ -177,22 +139,23 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 MyAudioViewHolder audioViewHolder = (MyAudioViewHolder) holder;
                 filePath = ((AudioBean) mDataset.get(position)).getFilePath();
                 uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + filePath);
-                audioViewHolder.mediaPlayer = MediaPlayer.create(MainActivity.context, uri);
-                audioViewHolder.mSeekBar.setMax(audioViewHolder.mediaPlayer.getDuration());
-                runTimer(audioViewHolder);
+                runAudio(audioViewHolder, MainActivity.context, uri);
                 break;
+
             case Constants.TYPE_VIDEO:
                 MyVideoViewHolder videoViewHolder = (MyVideoViewHolder) holder;
                 filePath = ((VideoBean) mDataset.get(position)).getFilePath();
                 uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + filePath);
                 videoViewHolder.mVideoView.setVideoURI(uri);
                 break;
+
             case Constants.TYPE_IMAGE:
                 MyImageViewHolder imageViewHolder = (MyImageViewHolder) holder;
                 filePath = ((ImageBean) mDataset.get(position)).getFilePath();
                 uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + filePath);
                 imageViewHolder.mImageView.setImageURI(uri);
                 break;
+
             default:
                 MyTextViewHolder textViewHolder = (MyTextViewHolder) holder;
                 String text = ((TextBean) mDataset.get(position)).getText();
@@ -207,7 +170,11 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mDataset.size();
     }
 
-    private void runTimer(final MyAudioViewHolder audioViewHolder1) {
+    private void runAudio(final MyAdapter.MyAudioViewHolder audioViewHolder1, Context context, Uri uri) {
+
+        audioViewHolder1.mediaPlayer = MediaPlayer.create(context, uri);
+        audioViewHolder1.mSeekBar.setMax(audioViewHolder1.mediaPlayer.getDuration());
+
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -230,6 +197,48 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+
+        audioViewHolder1.playButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                audioViewHolder1.mediaPlayer.start();
+            }
+        });
+
+        audioViewHolder1.pauseButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                audioViewHolder1.mediaPlayer.pause();
+            }
+        });
+
+        audioViewHolder1.variableSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                audioViewHolder1.mediaPlayer.seekTo(audioViewHolder1.mediaPlayer.getCurrentPosition() - (audioViewHolder1.mediaPlayer.getDuration() * VARIABLE_SKIP_PERCENT) / 100);
+            }
+        });
+
+        audioViewHolder1.variableSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                audioViewHolder1.mediaPlayer.seekTo(audioViewHolder1.mediaPlayer.getCurrentPosition() + (audioViewHolder1.mediaPlayer.getDuration() * VARIABLE_SKIP_PERCENT) / 100);
+            }
+        });
+
+        audioViewHolder1.shortSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                audioViewHolder1.mediaPlayer.seekTo(audioViewHolder1.mediaPlayer.getCurrentPosition() - SHORT_SKIP);
+            }
+        });
+
+        audioViewHolder1.shortSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                audioViewHolder1.mediaPlayer.seekTo(audioViewHolder1.mediaPlayer.getCurrentPosition() + SHORT_SKIP);
             }
         });
     }
