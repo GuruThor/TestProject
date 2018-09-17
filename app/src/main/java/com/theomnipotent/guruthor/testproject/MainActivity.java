@@ -1,6 +1,7 @@
 package com.theomnipotent.guruthor.testproject;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -16,8 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,39 +62,63 @@ public class MainActivity extends AppCompatActivity
         final MyAdapter myAdapter = new MyAdapter(genList);
         listRecyclerView.setAdapter(myAdapter);
 
+        class BackgroundTask extends
+                AsyncTask<Integer, String, Integer> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onProgressUpdate(String... values) {
+                super.onProgressUpdate(values);
+            }
+
+            @Override
+            protected Integer doInBackground(Integer... positions) {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                int x = new Random().nextInt(3);
+                switch (x) {
+                    case 0:
+                        AudioBean aBean = new AudioBean();
+                        aBean.setType(Constants.TYPE_AUDIO);
+                        aBean.setFilePath("R.raw.audio_file");
+                        genList.add(aBean);
+                        break;
+                    case 1:
+                        VideoBean vBean = new VideoBean();
+                        vBean.setType(Constants.TYPE_VIDEO);
+                        vBean.setFilePath("R.raw.video_file");
+                        genList.add(vBean);
+                        break;
+                    case 2:
+                        ImageBean iBean = new ImageBean();
+                        iBean.setType(Constants.TYPE_IMAGE);
+                        iBean.setFilePath("R.drawable.ic_menu_gallery");
+                        genList.add(iBean);
+                        break;
+                    default:
+                        TextBean tBean = new TextBean();
+                        tBean.setType(Constants.TYPE_TEXT);
+                        tBean.setText("This is a test String");
+                        genList.add(tBean);
+                }
+                return positions[0];
+            }
+
+            @Override
+            protected void onPostExecute(Integer position) {
+                super.onPostExecute(position);
+                myAdapter.notifyDataSetChanged();
+            }
+        }
 
         for (int i = 0; i < 15; i++) {
-//            try {
-//                  Thread().sleep(5000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-            int x = new Random().nextInt(3);
-            switch (x) {
-                case 0:
-                    AudioBean aBean = new AudioBean();
-                    aBean.setType(Constants.TYPE_AUDIO);
-                    aBean.setFilePath("R.raw.audio_file");
-                    genList.add(aBean);
-                    break;
-                case 1:
-                    VideoBean vBean = new VideoBean();
-                    vBean.setType(Constants.TYPE_VIDEO);
-                    vBean.setFilePath("R.raw.video_file");
-                    genList.add(vBean);
-                    break;
-                case 2:
-                    ImageBean iBean = new ImageBean();
-                    iBean.setType(Constants.TYPE_IMAGE);
-                    iBean.setFilePath("R.drawable.ic_menu_gallery");
-                    genList.add(iBean);
-                    break;
-                default:
-                    TextBean tBean = new TextBean();
-                    tBean.setType(Constants.TYPE_TEXT);
-                    tBean.setText("This is a test String");
-                    genList.add(tBean);
-            }
+            new BackgroundTask().execute(i);
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -166,67 +195,30 @@ public class MainActivity extends AppCompatActivity
     }
 }
 
-//         class BackgroundTask extends
-//                AsyncTask<Void, String, ArrayList> {
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//            }
-//
-//            @Override
-//            protected void onProgressUpdate(String... values) {
-//                super.onProgressUpdate(values);
-//            }
-//
-//            @Override
-//            protected ArrayList doInBackground(Void... params) {
-//                int i;
-//                for (i = 0; i < 10; i++){
-//                    try {
-//                        Thread.sleep(5000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    int x = r.nextInt(3);
-//                    switch (x) {
-//                        case 0:
-//                            URL urlImg = null;
-//                            try {
-//                                urlImg = new URL("https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg");
-//                            } catch (MalformedURLException e) {
-//                                e.printStackTrace();
-//                            }
-//                            genList.add(urlImg);
-//                            break;
-//                        case 1:
-//                            URL urlVid = null;
-//                            try {
-//                                urlVid = new URL("https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg");
-//                            } catch (MalformedURLException e) {
-//                                e.printStackTrace();
-//                            }
-//                            genList.add(urlVid);
-//                            break;
-//                        case 2:
-//                            URL urlAud = null;
-//                            try {
-//                                urlAud = new URL("https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg");
-//                            } catch (MalformedURLException e) {
-//                                e.printStackTrace();
-//                            }
-//                            genList.add(urlAud);
-//                            break;
-//                        default:
-//                            genList.add("Take a String");
-//                    }
-//                }
-//                myAdapter.notifyItemChanged(i);
-//                return genList;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(ArrayList result) {
-//                super.onPostExecute(result);
-//            }
+//    int x = new Random().nextInt(3);
+//            switch (x) {
+//                    case 0:
+//                    AudioBean aBean = new AudioBean();
+//                    aBean.setType(Constants.TYPE_AUDIO);
+//                    aBean.setFilePath("R.raw.audio_file");
+//                    genList.add(aBean);
+//                    break;
+//                    case 1:
+//                    VideoBean vBean = new VideoBean();
+//                    vBean.setType(Constants.TYPE_VIDEO);
+//                    vBean.setFilePath("R.raw.video_file");
+//                    genList.add(vBean);
+//                    break;
+//                    case 2:
+//                    ImageBean iBean = new ImageBean();
+//                    iBean.setType(Constants.TYPE_IMAGE);
+//                    iBean.setFilePath("R.drawable.ic_menu_gallery");
+//                    genList.add(iBean);
+//                    break;
+//                    default:
+//                    TextBean tBean = new TextBean();
+//                    tBean.setType(Constants.TYPE_TEXT);
+//                    tBean.setText("This is a test String");
+//                    genList.add(tBean);
 //        }
 
