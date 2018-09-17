@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:src="@android:drawable/divider_horizontal_dim_dark"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -20,14 +19,16 @@
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@android:drawable/ic_media_previous" />
+            app:srcCompat="@android:drawable/ic_media_previous"
+            android:contentDescription="@string/skip_back_10" />
 
         <ImageButton
             android:id="@+id/shortSkipBackward"
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@android:drawable/ic_media_previous" />
+            app:srcCompat="@android:drawable/ic_media_previous"
+            android:contentDescription="@string/skip_back_2s" />
 
         <ImageButton
             android:id="@+id/playButton"
@@ -50,14 +51,16 @@
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@android:drawable/ic_media_next" />
+            app:srcCompat="@android:drawable/ic_media_next"
+            android:contentDescription="@string/skip_2s" />
 
         <ImageButton
             android:id="@+id/variableSkipForward"
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@android:drawable/ic_media_next" />
+            app:srcCompat="@android:drawable/ic_media_next"
+            android:contentDescription="@string/skip_10" />
 
     </LinearLayout>
 
