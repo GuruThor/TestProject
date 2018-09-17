@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.theomnipotent.guruthor.testproject.Constants.SHORT_SKIP;
+import static com.theomnipotent.guruthor.testproject.Constants.VARIABLE_SKIP_PERCENT;
+
 public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<BaseBean> mDataset;
 
@@ -63,12 +66,20 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public SeekBar mSeekBar;
         public ImageButton playButton;
         public ImageButton pauseButton;
+        public ImageButton shortSkipBackward;
+        public ImageButton shortSkipForward;
+        public ImageButton variableSkipBackward;
+        public ImageButton variableSkipForward;
 
         public MyAudioViewHolder(View v) {
             super(v);
             mSeekBar = v.findViewById(R.id.scrubber);
             playButton = v.findViewById(R.id.playButton);
             pauseButton = v.findViewById(R.id.pauseButton);
+            shortSkipBackward = v.findViewById(R.id.shortSkipBackward);
+            shortSkipForward = v.findViewById(R.id.shortSkipForward);
+            variableSkipBackward = v.findViewById(R.id.variableSkipBackward);
+            variableSkipForward = v.findViewById(R.id.variableSkipForward);
 
             playButton.setOnClickListener(new ImageButton.OnClickListener() {
                 @Override
@@ -81,6 +92,34 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     mediaPlayer.pause();
+                }
+            });
+
+            variableSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - (mediaPlayer.getDuration()*VARIABLE_SKIP_PERCENT)/100);
+                }
+            });
+
+            variableSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + (mediaPlayer.getDuration()*VARIABLE_SKIP_PERCENT)/100);
+                }
+            });
+
+            shortSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - SHORT_SKIP);
+                }
+            });
+
+            shortSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + SHORT_SKIP);
                 }
             });
         }
