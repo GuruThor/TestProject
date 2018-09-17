@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -53,11 +54,20 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static class MyVideoViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         VideoView mVideoView;
+        MediaController mediaController;
+        ImageButton videoPlayButton;
+        ImageButton videoPauseButton;
+        ImageButton videoStopButton;
 
         MyVideoViewHolder(View v) {
             super(v);
             mVideoView = v.findViewById(R.id.video_view);
+            mVideoView.setMediaController(mediaController);
+            videoPlayButton = v.findViewById(R.id.videoPlayButton);
+            videoPauseButton = v.findViewById(R.id.videoPauseButton);
+            videoStopButton = v.findViewById(R.id.videoStopButton);
         }
+
     }
 
 
@@ -146,7 +156,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 MyVideoViewHolder videoViewHolder = (MyVideoViewHolder) holder;
                 filePath = ((VideoBean) mDataset.get(position)).getFilePath();
                 uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + filePath);
-                videoViewHolder.mVideoView.setVideoURI(uri);
+                runVideo(videoViewHolder, MainActivity.context, uri);
                 break;
 
             case Constants.TYPE_IMAGE:
@@ -242,4 +252,38 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
     }
+
+
+    private void runVideo(final MyAdapter.MyVideoViewHolder videoViewHolder1, Context context, Uri uri) {
+
+        MediaController mediaController = new MediaController(MainActivity.context);
+        mediaController.setMediaPlayer(videoViewHolder1.mVideoView);
+        videoViewHolder1.mVideoView.setVideoURI(uri);
+
+
+        videoViewHolder1.videoPlayButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                videoViewHolder1.mVideoView.start();
+            }
+        });
+
+        videoViewHolder1.videoPauseButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                videoViewHolder1.mVideoView.pause();
+            }
+        });
+
+        videoViewHolder1.videoStopButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                videoViewHolder1.mVideoView.seekTo(0);
+                videoViewHolder1.mVideoView.pause();
+            }
+        });
+
+    }
+
 }
+
