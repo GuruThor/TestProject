@@ -1,8 +1,10 @@
 package com.theomnipotent.guruthor.testproject;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -24,10 +26,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String PACKAGE_NAME;
+    @SuppressLint("StaticFieldLeak")
     public static Context context;
-    private RecyclerView listRecyclerView;
-    private RecyclerView.LayoutManager listLayoutManager;
-    private ArrayList<BaseBean> genList = new ArrayList();
+    private ArrayList<BaseBean> genList = new ArrayList<>();
     int i = 0;
 
     @Override
@@ -49,15 +50,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        listRecyclerView = findViewById(R.id.list_recycler_view);
+        RecyclerView listRecyclerView = findViewById(R.id.list_recycler_view);
         listRecyclerView.setHasFixedSize(true);
 
-        listLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager listLayoutManager = new LinearLayoutManager(this);
         listRecyclerView.setLayoutManager(listLayoutManager);
 
         final MyAdapter myAdapter = new MyAdapter(genList);
         listRecyclerView.setAdapter(myAdapter);
 
+        @SuppressLint("StaticFieldLeak")
         class BackgroundTask extends
                 AsyncTask<Integer, String, Integer> {
             @Override
@@ -82,19 +84,19 @@ public class MainActivity extends AppCompatActivity
                     case 0:
                         AudioBean aBean = new AudioBean();
                         aBean.setType(Constants.TYPE_AUDIO);
-                        aBean.setFilePath("R.raw.audio_file");
+                        aBean.setFilePath("raw/audio_file");
                         genList.add(aBean);
                         break;
                     case 1:
                         VideoBean vBean = new VideoBean();
                         vBean.setType(Constants.TYPE_VIDEO);
-                        vBean.setFilePath("R.raw.video_file");
+                        vBean.setFilePath("raw/video_file");
                         genList.add(vBean);
                         break;
                     case 2:
                         ImageBean iBean = new ImageBean();
                         iBean.setType(Constants.TYPE_IMAGE);
-                        iBean.setFilePath("R.drawable.ic_menu_gallery");
+                        iBean.setFilePath("drawable/ic_menu_gallery");
                         genList.add(iBean);
                         break;
                     default:
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -162,7 +164,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -180,15 +182,11 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void playAudio(View view) {
-
-        System.out.print("MainActivity: Audio Play");
-    }
 }
 
 //    int x = new Random().nextInt(3);

@@ -34,14 +34,16 @@
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@android:drawable/ic_media_play" />
+            app:srcCompat="@android:drawable/ic_media_play"
+            android:contentDescription="@string/play" />
 
         <ImageButton
             android:id="@+id/pauseButton"
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@android:drawable/ic_media_pause" />
+            app:srcCompat="@android:drawable/ic_media_pause"
+            android:contentDescription="@string/pause" />
 
         <ImageButton
             android:id="@+id/shortSkipForward"
@@ -63,8 +65,16 @@
         android:id="@+id/scrubber"
         style="@android:style/Widget.Material.Light.SeekBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_gravity="center" />
+
+    <!--<View-->
+    <!--android:id="@+id/divider"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_gravity="bottom|center"-->
+    <!--android:layout_weight="1"-->
+    <!--android:background="?android:attr/listDivider" />-->
 
 </LinearLayout>

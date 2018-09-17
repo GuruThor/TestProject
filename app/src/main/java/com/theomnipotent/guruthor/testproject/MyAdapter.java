@@ -27,11 +27,11 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
 
-    public static class MyTextViewHolder extends RecyclerView.ViewHolder {
+    private static class MyTextViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView mTextView;
+        private TextView mTextView;
 
-        public MyTextViewHolder(View v) {
+        private MyTextViewHolder(View v) {
             super(v);
             mTextView = v.findViewById(R.id.contact_name);
         }
@@ -40,9 +40,9 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static class MyImageViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public ImageView mImageView;
+        ImageView mImageView;
 
-        public MyImageViewHolder(View v) {
+        MyImageViewHolder(View v) {
             super(v);
             mImageView = v.findViewById(R.id.image);
         }
@@ -51,9 +51,9 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static class MyVideoViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public VideoView mVideoView;
+        VideoView mVideoView;
 
-        public MyVideoViewHolder(View v) {
+        MyVideoViewHolder(View v) {
             super(v);
             mVideoView = v.findViewById(R.id.video_view);
         }
@@ -71,7 +71,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public ImageButton variableSkipBackward;
         public ImageButton variableSkipForward;
 
-        public MyAudioViewHolder(View v) {
+        MyAudioViewHolder(View v) {
             super(v);
             mSeekBar = v.findViewById(R.id.scrubber);
             playButton = v.findViewById(R.id.playButton);
@@ -126,7 +126,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(ArrayList<BaseBean> myDataset) {
+    MyAdapter(ArrayList<BaseBean> myDataset) {
         mDataset = myDataset;
     }
 
@@ -136,34 +136,31 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                       int viewType) {
         // create a new view
         switch (viewType) {
             case Constants.TYPE_AUDIO: {
                 View v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.my_audio_view, parent, false);
-                MyAudioViewHolder vh = new MyAudioViewHolder(v);
-                return vh;
+                return new MyAudioViewHolder(v);
             }
             case Constants.TYPE_VIDEO: {
                 View v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.my_video_view, parent, false);
-                MyVideoViewHolder vh = new MyVideoViewHolder(v);
-                return vh;
+                return new MyVideoViewHolder(v);
             }
             case Constants.TYPE_IMAGE: {
                 View v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.my_image_view, parent, false);
-                MyImageViewHolder vh = new MyImageViewHolder(v);
-                return vh;
+                return new MyImageViewHolder(v);
             }
             default: {
                 View v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.my_text_view, parent, false);
-                MyTextViewHolder vh = new MyTextViewHolder(v);
-                return vh;
+                return new MyTextViewHolder(v);
             }
         }
     }
@@ -178,8 +175,8 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         switch (holder.getItemViewType()) {
             case Constants.TYPE_AUDIO:
                 MyAudioViewHolder audioViewHolder = (MyAudioViewHolder) holder;
-//                filePath = ((AudioBean) mDataset.get(position)).getFilePath();
-                uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + R.raw.audio_file);
+                filePath = ((AudioBean) mDataset.get(position)).getFilePath();
+                uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + filePath);
                 audioViewHolder.mediaPlayer = MediaPlayer.create(MainActivity.context, uri);
                 audioViewHolder.mSeekBar.setMax(audioViewHolder.mediaPlayer.getDuration());
                 runTimer(audioViewHolder);
@@ -187,13 +184,13 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case Constants.TYPE_VIDEO:
                 MyVideoViewHolder videoViewHolder = (MyVideoViewHolder) holder;
                 filePath = ((VideoBean) mDataset.get(position)).getFilePath();
-                uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + R.raw.video_file);
+                uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + filePath);
                 videoViewHolder.mVideoView.setVideoURI(uri);
                 break;
             case Constants.TYPE_IMAGE:
                 MyImageViewHolder imageViewHolder = (MyImageViewHolder) holder;
                 filePath = ((ImageBean) mDataset.get(position)).getFilePath();
-                uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + R.drawable.ic_menu_gallery);
+                uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + filePath);
                 imageViewHolder.mImageView.setImageURI(uri);
                 break;
             default:
@@ -210,7 +207,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mDataset.size();
     }
 
-    public void runTimer(final MyAudioViewHolder audioViewHolder1) {
+    private void runTimer(final MyAudioViewHolder audioViewHolder1) {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
