@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:layout_gravity="left">
+    android:layout_gravity="start">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,18 +15,52 @@
         android:orientation="horizontal">
 
         <ImageButton
+            android:id="@+id/variableSkipBackward"
+            style="@android:style/Widget.Material.Light.ImageButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@android:drawable/ic_media_previous"
+            android:contentDescription="@string/skip_back_10" />
+
+        <ImageButton
+            android:id="@+id/shortSkipBackward"
+            style="@android:style/Widget.Material.Light.ImageButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@android:drawable/ic_media_previous"
+            android:contentDescription="@string/skip_back_2s" />
+
+        <ImageButton
             android:id="@+id/playButton"
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@android:drawable/ic_media_play" />
+            app:srcCompat="@android:drawable/ic_media_play"
+            android:contentDescription="@string/play" />
 
         <ImageButton
             android:id="@+id/pauseButton"
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:srcCompat="@android:drawable/ic_media_pause" />
+            app:srcCompat="@android:drawable/ic_media_pause"
+            android:contentDescription="@string/pause" />
+
+        <ImageButton
+            android:id="@+id/shortSkipForward"
+            style="@android:style/Widget.Material.Light.ImageButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@android:drawable/ic_media_next"
+            android:contentDescription="@string/skip_2s" />
+
+        <ImageButton
+            android:id="@+id/variableSkipForward"
+            style="@android:style/Widget.Material.Light.ImageButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:srcCompat="@android:drawable/ic_media_next"
+            android:contentDescription="@string/skip_10" />
 
     </LinearLayout>
 
@@ -34,8 +68,16 @@
         android:id="@+id/scrubber"
         style="@android:style/Widget.Material.Light.SeekBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_gravity="center" />
+
+    <!--<View-->
+    <!--android:id="@+id/divider"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_gravity="bottom|center"-->
+    <!--android:layout_weight="1"-->
+    <!--android:background="?android:attr/listDivider" />-->
 
 </LinearLayout>

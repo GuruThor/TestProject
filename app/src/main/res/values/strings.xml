@@ -6,4 +6,11 @@
     <string name="nav_header_subtitle">Dynamic RecyclerView</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="todo">TODO</string>
+    <string name="skip_2s">Skip 2s</string>
+    <string name="skip_10">Skip 10%</string>
+    <string name="skip_back_10">Skip Back 10%</string>
+    <string name="skip_back_2s">Skip Back 2s</string>
 </resources>
