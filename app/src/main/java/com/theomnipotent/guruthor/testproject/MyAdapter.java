@@ -1,6 +1,5 @@
 package com.theomnipotent.guruthor.testproject;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -24,24 +23,68 @@ import static com.theomnipotent.guruthor.testproject.Constants.VARIABLE_SKIP_PER
 
 public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<BaseBean> mDataset;
-    private MediaPlayer mediaPlayer = new MediaPlayer();
+    private static MediaPlayer mediaPlayer = new MediaPlayer();
     private int playingAdapterPosition = -1;
     private int prevPlayingAdapterPosition = -1;
+    private int position = 0;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
 
-    private static class MyTextViewHolder extends RecyclerView.ViewHolder {
+    public static class MyAudioViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        private TextView mTextView;
+        SeekBar mSeekBar;
+        ImageButton playButton;
+        ImageButton pauseButton;
+        ImageButton stopButton;
+        ImageButton shortSkipBackward;
+        ImageButton shortSkipForward;
+        ImageButton variableSkipBackward;
+        ImageButton variableSkipForward;
 
-        private MyTextViewHolder(View v) {
+        MyAudioViewHolder(View v) {
             super(v);
-            mTextView = v.findViewById(R.id.contact_name);
+            mSeekBar = v.findViewById(R.id.audio_scrubber);
+            playButton = v.findViewById(R.id.playButton);
+            pauseButton = v.findViewById(R.id.pauseButton);
+            stopButton = v.findViewById(R.id.stopButton);
+            shortSkipBackward = v.findViewById(R.id.audioShortSkipBackward);
+            shortSkipForward = v.findViewById(R.id.audioShortSkipForward);
+            variableSkipBackward = v.findViewById(R.id.audioVariableSkipBackward);
+            variableSkipForward = v.findViewById(R.id.audioVariableSkipForward);
+
         }
     }
 
+    public static class MyVideoViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        SeekBar mSeekBar;
+        VideoView mVideoView;
+        MediaController mediaController = new MediaController(MainActivity.context);
+        ImageButton videoPlayButton;
+        ImageButton videoPauseButton;
+        ImageButton videoStopButton;
+        ImageButton shortSkipBackward;
+        ImageButton shortSkipForward;
+        ImageButton variableSkipBackward;
+        ImageButton variableSkipForward;
+
+        MyVideoViewHolder(View v) {
+            super(v);
+            mSeekBar = v.findViewById(R.id.video_scrubber);
+            mVideoView = v.findViewById(R.id.video_view);
+            mVideoView.setMediaController(mediaController);
+            videoPlayButton = v.findViewById(R.id.videoPlayButton);
+            videoPauseButton = v.findViewById(R.id.videoPauseButton);
+            videoStopButton = v.findViewById(R.id.videoStopButton);
+            shortSkipBackward = v.findViewById(R.id.videoShortSkipBackward);
+            shortSkipForward = v.findViewById(R.id.videoShortSkipForward);
+            variableSkipBackward = v.findViewById(R.id.videoVariableSkipBackward);
+            variableSkipForward = v.findViewById(R.id.videoVariableSkipForward);
+        }
+
+    }
 
     public static class MyImageViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -53,48 +96,13 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-
-    public static class MyVideoViewHolder extends RecyclerView.ViewHolder {
+    private static class MyTextViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        SeekBar mSeekBar;
-        VideoView mVideoView;
-        MediaController mediaController;
-        ImageButton videoPlayButton;
-        ImageButton videoPauseButton;
-        ImageButton videoStopButton;
+        private TextView mTextView;
 
-        MyVideoViewHolder(View v) {
+        private MyTextViewHolder(View v) {
             super(v);
-            mVideoView = v.findViewById(R.id.video_view);
-            mVideoView.setMediaController(mediaController);
-            videoPlayButton = v.findViewById(R.id.videoPlayButton);
-            videoPauseButton = v.findViewById(R.id.videoPauseButton);
-            videoStopButton = v.findViewById(R.id.videoStopButton);
-        }
-
-    }
-
-
-    public static class MyAudioViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        SeekBar mSeekBar;
-        ImageButton playButton;
-        ImageButton pauseButton;
-        ImageButton shortSkipBackward;
-        ImageButton shortSkipForward;
-        ImageButton variableSkipBackward;
-        ImageButton variableSkipForward;
-
-        MyAudioViewHolder(View v) {
-            super(v);
-            mSeekBar = v.findViewById(R.id.scrubber);
-            playButton = v.findViewById(R.id.playButton);
-            pauseButton = v.findViewById(R.id.pauseButton);
-            shortSkipBackward = v.findViewById(R.id.shortSkipBackward);
-            shortSkipForward = v.findViewById(R.id.shortSkipForward);
-            variableSkipBackward = v.findViewById(R.id.variableSkipBackward);
-            variableSkipForward = v.findViewById(R.id.variableSkipForward);
-
+            mTextView = v.findViewById(R.id.contact_name);
         }
     }
 
@@ -157,7 +165,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 MyVideoViewHolder videoViewHolder = (MyVideoViewHolder) holder;
                 filePath = ((VideoBean) mDataset.get(position)).getFilePath();
                 uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + filePath);
-                runVideo(videoViewHolder, MainActivity.context, uri);
+                runVideo(videoViewHolder, uri);
                 break;
 
             case Constants.TYPE_IMAGE:
@@ -195,6 +203,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                     mediaPlayer.reset();
                     mediaPlayer.stop();
+                    mediaPlayer.release();
                     mediaPlayer = MediaPlayer.create(MainActivity.context, uri);
 
                 } else {
@@ -245,6 +254,14 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         });
 
+        audioViewHolder1.stopButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaPlayer.seekTo(0);
+                mediaPlayer.pause();
+            }
+        });
+
         audioViewHolder1.variableSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -274,16 +291,91 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
     }
 
-    private void runVideo(final MyAdapter.MyVideoViewHolder videoViewHolder1, Context context, Uri uri) {
+    private void runVideo(final MyAdapter.MyVideoViewHolder videoViewHolder1, final Uri uri) {
 
-        MediaController mediaController = new MediaController(MainActivity.context);
-        mediaController.setMediaPlayer(videoViewHolder1.mVideoView);
+//        // Set the media controller buttons
+//        if (videoViewHolder1.mediaController == null) {
+//            videoViewHolder1.mediaController = new MediaController(MainActivity.context);
+//
+//            // Set the videoView that acts as the anchor for the MediaController.
+//            videoViewHolder1.mediaController.setAnchorView(videoViewHolder1.mVideoView);
+//
+//
+//            // Set MediaController for VideoView
+//            videoViewHolder1.mVideoView.setMediaController(videoViewHolder1.mediaController);
+//        }
+//        videoViewHolder1.mVideoView.setVideoURI(uri);
+//
+//        videoViewHolder1.mVideoView.requestFocus();
+//
+//        // When the video file ready for playback.
+//        videoViewHolder1.mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+//
+//            public void onPrepared(MediaPlayer mediaPlayer) {
+//
+//
+//                videoViewHolder1.mVideoView.seekTo(position);
+//                if (position == 0) {
+//                    videoViewHolder1.mVideoView.start();
+//                }
+//
+//                // When video Screen change size.
+//                mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+//                    @Override
+//                    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+//
+//                        // Re-Set the videoView that acts as the anchor for the MediaController
+//                        videoViewHolder1.mediaController.setAnchorView(videoViewHolder1.mVideoView);
+//                    }
+//                });
+//            }
+//        });
+
+//        prevPlayingAdapterPosition = playingAdapterPosition;
+//        playingAdapterPosition = videoViewHolder1.getAdapterPosition();
+//
+        videoViewHolder1.mVideoView.canPause();
+        videoViewHolder1.mVideoView.canSeekBackward();
+        videoViewHolder1.mVideoView.canSeekForward();
+
+        videoViewHolder1.mediaController.setMediaPlayer(videoViewHolder1.mVideoView);
         videoViewHolder1.mVideoView.setVideoURI(uri);
-
 
         videoViewHolder1.videoPlayButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                videoViewHolder1.mSeekBar.setMax(videoViewHolder1.mVideoView.getDuration());
+
+                new Timer().scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (videoViewHolder1.getAdapterPosition() == playingAdapterPosition)
+                            videoViewHolder1.mSeekBar.setProgress(videoViewHolder1.mVideoView.getCurrentPosition());
+                        else if (videoViewHolder1.getAdapterPosition() == prevPlayingAdapterPosition)
+                            videoViewHolder1.mSeekBar.setProgress(0);
+                    }
+                }, 0, 100);
+
+                videoViewHolder1.mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if (fromUser) {
+                            videoViewHolder1.mVideoView.seekTo(progress);
+                        }
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+
                 videoViewHolder1.mVideoView.start();
             }
         });
@@ -300,6 +392,34 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onClick(View view) {
                 videoViewHolder1.mVideoView.seekTo(0);
                 videoViewHolder1.mVideoView.pause();
+            }
+        });
+
+        videoViewHolder1.variableSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                videoViewHolder1.mVideoView.seekTo(videoViewHolder1.mVideoView.getCurrentPosition() - (videoViewHolder1.mVideoView.getDuration() * VARIABLE_SKIP_PERCENT) / 100);
+            }
+        });
+
+        videoViewHolder1.variableSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                videoViewHolder1.mVideoView.seekTo(videoViewHolder1.mVideoView.getCurrentPosition() + (videoViewHolder1.mVideoView.getDuration() * VARIABLE_SKIP_PERCENT) / 100);
+            }
+        });
+
+        videoViewHolder1.shortSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                videoViewHolder1.mVideoView.seekTo(videoViewHolder1.mVideoView.getCurrentPosition() - SHORT_SKIP);
+            }
+        });
+
+        videoViewHolder1.shortSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                videoViewHolder1.mVideoView.seekTo(videoViewHolder1.mVideoView.getCurrentPosition() + SHORT_SKIP);
             }
         });
 

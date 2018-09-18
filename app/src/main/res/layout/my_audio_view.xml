@@ -15,7 +15,7 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/variableSkipBackward"
+            android:id="@+id/audioVariableSkipBackward"
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -23,7 +23,7 @@
             android:contentDescription="@string/skip_back_10" />
 
         <ImageButton
-            android:id="@+id/shortSkipBackward"
+            android:id="@+id/audioShortSkipBackward"
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -47,7 +47,15 @@
             android:contentDescription="@string/pause" />
 
         <ImageButton
-            android:id="@+id/shortSkipForward"
+            android:id="@+id/stopButton"
+            style="@android:style/Widget.Material.Light.ImageButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/play"
+            app:srcCompat="@android:drawable/ic_menu_revert" />
+
+        <ImageButton
+            android:id="@+id/audioShortSkipForward"
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -55,7 +63,7 @@
             android:contentDescription="@string/skip_2s" />
 
         <ImageButton
-            android:id="@+id/variableSkipForward"
+            android:id="@+id/audioVariableSkipForward"
             style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -65,7 +73,7 @@
     </LinearLayout>
 
     <SeekBar
-        android:id="@+id/scrubber"
+        android:id="@+id/audio_scrubber"
         style="@android:style/Widget.Material.Light.SeekBar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
