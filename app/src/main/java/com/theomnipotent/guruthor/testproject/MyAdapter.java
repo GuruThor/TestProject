@@ -333,49 +333,46 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 //        prevPlayingAdapterPosition = playingAdapterPosition;
 //        playingAdapterPosition = videoViewHolder1.getAdapterPosition();
-//
-        videoViewHolder1.mVideoView.canPause();
-        videoViewHolder1.mVideoView.canSeekBackward();
-        videoViewHolder1.mVideoView.canSeekForward();
+
 
         videoViewHolder1.mediaController.setMediaPlayer(videoViewHolder1.mVideoView);
         videoViewHolder1.mVideoView.setVideoURI(uri);
 
+        videoViewHolder1.mSeekBar.setMax(videoViewHolder1.mVideoView.getDuration());
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (videoViewHolder1.getAdapterPosition() == playingAdapterPosition)
+                    videoViewHolder1.mSeekBar.setProgress(videoViewHolder1.mVideoView.getCurrentPosition());
+                else if (videoViewHolder1.getAdapterPosition() == prevPlayingAdapterPosition)
+                    videoViewHolder1.mSeekBar.setProgress(0);
+            }
+        }, 0, 100);
+
+        videoViewHolder1.mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    videoViewHolder1.mVideoView.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
         videoViewHolder1.videoPlayButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                videoViewHolder1.mSeekBar.setMax(videoViewHolder1.mVideoView.getDuration());
-
-                new Timer().scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (videoViewHolder1.getAdapterPosition() == playingAdapterPosition)
-                            videoViewHolder1.mSeekBar.setProgress(videoViewHolder1.mVideoView.getCurrentPosition());
-                        else if (videoViewHolder1.getAdapterPosition() == prevPlayingAdapterPosition)
-                            videoViewHolder1.mSeekBar.setProgress(0);
-                    }
-                }, 0, 100);
-
-                videoViewHolder1.mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        if (fromUser) {
-                            videoViewHolder1.mVideoView.seekTo(progress);
-                        }
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                });
-
                 videoViewHolder1.mVideoView.start();
             }
         });
