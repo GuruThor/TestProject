@@ -24,7 +24,7 @@ import static com.theomnipotent.guruthor.testproject.Constants.VARIABLE_SKIP_PER
 
 public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<BaseBean> mDataset;
-    private MediaPlayer mediaPlayer = AudioSingleton.getInstance();
+    private MediaPlayer mediaPlayer = new MediaPlayer();
     private int playingAdapterPosition = -1;
     private int prevPlayingAdapterPosition = -1;
 
@@ -77,7 +77,6 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static class MyAudioViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-//        MediaPlayer mediaPlayer = AudioSingleton.getInstance();
         SeekBar mSeekBar;
         ImageButton playButton;
         ImageButton pauseButton;
@@ -183,8 +182,6 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     private void runAudio(final MyAdapter.MyAudioViewHolder audioViewHolder1, final Uri uri) {
-
-
 
 
         audioViewHolder1.playButton.setOnClickListener(new ImageButton.OnClickListener() {
@@ -309,4 +306,3 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 }
-

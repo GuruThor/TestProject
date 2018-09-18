@@ -189,31 +189,3 @@ public class MainActivity extends AppCompatActivity
     }
 
 }
-
-//    int x = new Random().nextInt(3);
-//            switch (x) {
-//                    case 0:
-//                    AudioBean aBean = new AudioBean();
-//                    aBean.setType(Constants.TYPE_AUDIO);
-//                    aBean.setFilePath("R.raw.audio_file");
-//                    genList.add(aBean);
-//                    break;
-//                    case 1:
-//                    VideoBean vBean = new VideoBean();
-//                    vBean.setType(Constants.TYPE_VIDEO);
-//                    vBean.setFilePath("R.raw.video_file");
-//                    genList.add(vBean);
-//                    break;
-//                    case 2:
-//                    ImageBean iBean = new ImageBean();
-//                    iBean.setType(Constants.TYPE_IMAGE);
-//                    iBean.setFilePath("R.drawable.ic_menu_gallery");
-//                    genList.add(iBean);
-//                    break;
-//                    default:
-//                    TextBean tBean = new TextBean();
-//                    tBean.setType(Constants.TYPE_TEXT);
-//                    tBean.setText("This is a test String");
-//                    genList.add(tBean);
-//        }
-
