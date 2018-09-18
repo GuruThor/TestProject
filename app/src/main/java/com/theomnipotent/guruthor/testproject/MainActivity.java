@@ -37,20 +37,21 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
         PACKAGE_NAME = getApplicationContext().getPackageName();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        final DrawerLayout[] drawer = {findViewById(R.id.drawer_layout)};
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, drawer[0], toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer[0].addDrawerListener(toggle);
         toggle.syncState();
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        RecyclerView listRecyclerView = findViewById(R.id.list_recycler_view);
+        final RecyclerView listRecyclerView = findViewById(R.id.list_recycler_view);
         listRecyclerView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager listLayoutManager = new LinearLayoutManager(this);
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onPostExecute(Integer position) {
                 super.onPostExecute(position);
-                myAdapter.notifyDataSetChanged();
+                myAdapter.notifyItemInserted(position);
             }
         }
 

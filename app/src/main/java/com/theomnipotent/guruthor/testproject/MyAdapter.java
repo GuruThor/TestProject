@@ -24,6 +24,9 @@ import static com.theomnipotent.guruthor.testproject.Constants.VARIABLE_SKIP_PER
 
 public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<BaseBean> mDataset;
+    private MediaPlayer mediaPlayer = AudioSingleton.getInstance();
+    private int playingAdapterPosition = -1;
+    private int prevPlayingAdapterPosition = -1;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -53,6 +56,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static class MyVideoViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        SeekBar mSeekBar;
         VideoView mVideoView;
         MediaController mediaController;
         ImageButton videoPlayButton;
@@ -73,7 +77,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static class MyAudioViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        MediaPlayer mediaPlayer;
+//        MediaPlayer mediaPlayer = AudioSingleton.getInstance();
         SeekBar mSeekBar;
         ImageButton playButton;
         ImageButton pauseButton;
@@ -81,11 +85,9 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ImageButton shortSkipForward;
         ImageButton variableSkipBackward;
         ImageButton variableSkipForward;
-        View view;
 
         MyAudioViewHolder(View v) {
             super(v);
-            view = v;
             mSeekBar = v.findViewById(R.id.scrubber);
             playButton = v.findViewById(R.id.playButton);
             pauseButton = v.findViewById(R.id.pauseButton);
@@ -149,7 +151,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 MyAudioViewHolder audioViewHolder = (MyAudioViewHolder) holder;
                 filePath = ((AudioBean) mDataset.get(position)).getFilePath();
                 uri = Uri.parse("android.resource://" + MainActivity.PACKAGE_NAME + "/" + filePath);
-                runAudio(audioViewHolder, MainActivity.context, uri);
+                runAudio(audioViewHolder, uri);
                 break;
 
             case Constants.TYPE_VIDEO:
@@ -180,79 +182,100 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mDataset.size();
     }
 
-    private void runAudio(final MyAdapter.MyAudioViewHolder audioViewHolder1, Context context, Uri uri) {
+    private void runAudio(final MyAdapter.MyAudioViewHolder audioViewHolder1, final Uri uri) {
 
-        audioViewHolder1.mediaPlayer = MediaPlayer.create(context, uri);
-        audioViewHolder1.mSeekBar.setMax(audioViewHolder1.mediaPlayer.getDuration());
 
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                audioViewHolder1.mSeekBar.setProgress(audioViewHolder1.mediaPlayer.getCurrentPosition());
-            }
-        }, 0, 100);
-        audioViewHolder1.mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    audioViewHolder1.mediaPlayer.seekTo(progress);
-                }
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
         audioViewHolder1.playButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                audioViewHolder1.mediaPlayer.start();
+
+                prevPlayingAdapterPosition = playingAdapterPosition;
+                playingAdapterPosition = audioViewHolder1.getAdapterPosition();
+
+                if (mediaPlayer.isPlaying()) {
+
+                    mediaPlayer.reset();
+                    mediaPlayer.stop();
+                    mediaPlayer = MediaPlayer.create(MainActivity.context, uri);
+
+                } else {
+
+                    mediaPlayer = MediaPlayer.create(MainActivity.context, uri);
+
+                }
+
+                audioViewHolder1.mSeekBar.setMax(mediaPlayer.getDuration());
+
+                new Timer().scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (audioViewHolder1.getAdapterPosition() == playingAdapterPosition)
+                            audioViewHolder1.mSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+                        else if (audioViewHolder1.getAdapterPosition() == prevPlayingAdapterPosition)
+                            audioViewHolder1.mSeekBar.setProgress(0);
+                    }
+                }, 0, 100);
+
+                audioViewHolder1.mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if (fromUser) {
+                            mediaPlayer.seekTo(progress);
+                        }
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+
+                mediaPlayer.start();
             }
         });
 
         audioViewHolder1.pauseButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                audioViewHolder1.mediaPlayer.pause();
+                mediaPlayer.pause();
             }
         });
 
         audioViewHolder1.variableSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                audioViewHolder1.mediaPlayer.seekTo(audioViewHolder1.mediaPlayer.getCurrentPosition() - (audioViewHolder1.mediaPlayer.getDuration() * VARIABLE_SKIP_PERCENT) / 100);
+                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - (mediaPlayer.getDuration() * VARIABLE_SKIP_PERCENT) / 100);
             }
         });
 
         audioViewHolder1.variableSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                audioViewHolder1.mediaPlayer.seekTo(audioViewHolder1.mediaPlayer.getCurrentPosition() + (audioViewHolder1.mediaPlayer.getDuration() * VARIABLE_SKIP_PERCENT) / 100);
+                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + (mediaPlayer.getDuration() * VARIABLE_SKIP_PERCENT) / 100);
             }
         });
 
         audioViewHolder1.shortSkipBackward.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                audioViewHolder1.mediaPlayer.seekTo(audioViewHolder1.mediaPlayer.getCurrentPosition() - SHORT_SKIP);
+                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - SHORT_SKIP);
             }
         });
 
         audioViewHolder1.shortSkipForward.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                audioViewHolder1.mediaPlayer.seekTo(audioViewHolder1.mediaPlayer.getCurrentPosition() + SHORT_SKIP);
+                mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + SHORT_SKIP);
             }
         });
     }
-
 
     private void runVideo(final MyAdapter.MyVideoViewHolder videoViewHolder1, Context context, Uri uri) {
 
