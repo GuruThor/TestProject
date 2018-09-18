@@ -37,20 +37,21 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
         PACKAGE_NAME = getApplicationContext().getPackageName();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        final DrawerLayout[] drawer = {findViewById(R.id.drawer_layout)};
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, drawer[0], toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer[0].addDrawerListener(toggle);
         toggle.syncState();
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        RecyclerView listRecyclerView = findViewById(R.id.list_recycler_view);
+        final RecyclerView listRecyclerView = findViewById(R.id.list_recycler_view);
         listRecyclerView.setHasFixedSize(true);
 
         RecyclerView.LayoutManager listLayoutManager = new LinearLayoutManager(this);
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void onPostExecute(Integer position) {
                 super.onPostExecute(position);
-                myAdapter.notifyDataSetChanged();
+                myAdapter.notifyItemInserted(position);
             }
         }
 
@@ -188,31 +189,3 @@ public class MainActivity extends AppCompatActivity
     }
 
 }
-
-//    int x = new Random().nextInt(3);
-//            switch (x) {
-//                    case 0:
-//                    AudioBean aBean = new AudioBean();
-//                    aBean.setType(Constants.TYPE_AUDIO);
-//                    aBean.setFilePath("R.raw.audio_file");
-//                    genList.add(aBean);
-//                    break;
-//                    case 1:
-//                    VideoBean vBean = new VideoBean();
-//                    vBean.setType(Constants.TYPE_VIDEO);
-//                    vBean.setFilePath("R.raw.video_file");
-//                    genList.add(vBean);
-//                    break;
-//                    case 2:
-//                    ImageBean iBean = new ImageBean();
-//                    iBean.setType(Constants.TYPE_IMAGE);
-//                    iBean.setFilePath("R.drawable.ic_menu_gallery");
-//                    genList.add(iBean);
-//                    break;
-//                    default:
-//                    TextBean tBean = new TextBean();
-//                    tBean.setType(Constants.TYPE_TEXT);
-//                    tBean.setText("This is a test String");
-//                    genList.add(tBean);
-//        }
-
