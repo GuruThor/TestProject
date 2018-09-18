@@ -26,6 +26,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static MediaPlayer mediaPlayer = new MediaPlayer();
     private int playingAdapterPosition = -1;
     private int prevPlayingAdapterPosition = -1;
+    private int position = 0;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -292,29 +293,57 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void runVideo(final MyAdapter.MyVideoViewHolder videoViewHolder1, final Uri uri) {
 
+//        // Set the media controller buttons
+//        if (videoViewHolder1.mediaController == null) {
+//            videoViewHolder1.mediaController = new MediaController(MainActivity.context);
+//
+//            // Set the videoView that acts as the anchor for the MediaController.
+//            videoViewHolder1.mediaController.setAnchorView(videoViewHolder1.mVideoView);
+//
+//
+//            // Set MediaController for VideoView
+//            videoViewHolder1.mVideoView.setMediaController(videoViewHolder1.mediaController);
+//        }
+//        videoViewHolder1.mVideoView.setVideoURI(uri);
+//
+//        videoViewHolder1.mVideoView.requestFocus();
+//
+//        // When the video file ready for playback.
+//        videoViewHolder1.mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+//
+//            public void onPrepared(MediaPlayer mediaPlayer) {
+//
+//
+//                videoViewHolder1.mVideoView.seekTo(position);
+//                if (position == 0) {
+//                    videoViewHolder1.mVideoView.start();
+//                }
+//
+//                // When video Screen change size.
+//                mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+//                    @Override
+//                    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+//
+//                        // Re-Set the videoView that acts as the anchor for the MediaController
+//                        videoViewHolder1.mediaController.setAnchorView(videoViewHolder1.mVideoView);
+//                    }
+//                });
+//            }
+//        });
+
+//        prevPlayingAdapterPosition = playingAdapterPosition;
+//        playingAdapterPosition = videoViewHolder1.getAdapterPosition();
+//
+        videoViewHolder1.mVideoView.canPause();
+        videoViewHolder1.mVideoView.canSeekBackward();
+        videoViewHolder1.mVideoView.canSeekForward();
+
+        videoViewHolder1.mediaController.setMediaPlayer(videoViewHolder1.mVideoView);
+        videoViewHolder1.mVideoView.setVideoURI(uri);
 
         videoViewHolder1.videoPlayButton.setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-                prevPlayingAdapterPosition = playingAdapterPosition;
-                playingAdapterPosition = videoViewHolder1.getAdapterPosition();
-
-                videoViewHolder1.mVideoView.canPause();
-                videoViewHolder1.mVideoView.canSeekBackward();
-                videoViewHolder1.mVideoView.canSeekBackward();
-
-                if (videoViewHolder1.mVideoView.isPlaying()) {
-
-                    videoViewHolder1.mVideoView.stopPlayback();
-                    videoViewHolder1.mediaController.setMediaPlayer(videoViewHolder1.mVideoView);
-                    videoViewHolder1.mVideoView.setVideoURI(uri);
-
-                } else {
-
-                    videoViewHolder1.mediaController.setMediaPlayer(videoViewHolder1.mVideoView);
-                    videoViewHolder1.mVideoView.setVideoURI(uri);
-
-                }
 
                 videoViewHolder1.mSeekBar.setMax(videoViewHolder1.mVideoView.getDuration());
 
