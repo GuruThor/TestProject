@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -26,7 +25,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static MediaPlayer mediaPlayer = new MediaPlayer();
     private int playingAdapterPosition = -1;
     private int prevPlayingAdapterPosition = -1;
-    private int position = 0;
+//    private int position = 0;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -61,7 +60,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         // each data item is just a string in this case
         SeekBar mSeekBar;
         VideoView mVideoView;
-        MediaController mediaController = new MediaController(MainActivity.context);
+        //        MediaController mediaController = new MediaController(MainActivity.context);
         ImageButton videoPlayButton;
         ImageButton videoPauseButton;
         ImageButton videoStopButton;
@@ -74,7 +73,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(v);
             mSeekBar = v.findViewById(R.id.video_scrubber);
             mVideoView = v.findViewById(R.id.video_view);
-            mVideoView.setMediaController(mediaController);
+//            mVideoView.setMediaController(mediaController);
             videoPlayButton = v.findViewById(R.id.videoPlayButton);
             videoPauseButton = v.findViewById(R.id.videoPauseButton);
             videoStopButton = v.findViewById(R.id.videoStopButton);
@@ -218,7 +217,12 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     @Override
                     public void run() {
                         if (audioViewHolder1.getAdapterPosition() == playingAdapterPosition)
-                            audioViewHolder1.mSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+                            try {
+                                audioViewHolder1.mSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+                            } catch (IllegalStateException e) {
+                                e.printStackTrace();
+                            }
+
                         else if (audioViewHolder1.getAdapterPosition() == prevPlayingAdapterPosition)
                             audioViewHolder1.mSeekBar.setProgress(0);
                     }
@@ -293,81 +297,9 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void runVideo(final MyAdapter.MyVideoViewHolder videoViewHolder1, final Uri uri) {
 
-//        // Set the media controller buttons
-//        if (videoViewHolder1.mediaController == null) {
-//            videoViewHolder1.mediaController = new MediaController(MainActivity.context);
-//
-//            // Set the videoView that acts as the anchor for the MediaController.
-//            videoViewHolder1.mediaController.setAnchorView(videoViewHolder1.mVideoView);
-//
-//
-//            // Set MediaController for VideoView
-//            videoViewHolder1.mVideoView.setMediaController(videoViewHolder1.mediaController);
-//        }
-//        videoViewHolder1.mVideoView.setVideoURI(uri);
-//
-//        videoViewHolder1.mVideoView.requestFocus();
-//
-//        // When the video file ready for playback.
-//        videoViewHolder1.mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
-//
-//            public void onPrepared(MediaPlayer mediaPlayer) {
-//
-//
-//                videoViewHolder1.mVideoView.seekTo(position);
-//                if (position == 0) {
-//                    videoViewHolder1.mVideoView.start();
-//                }
-//
-//                // When video Screen change size.
-//                mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-//                    @Override
-//                    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-//
-//                        // Re-Set the videoView that acts as the anchor for the MediaController
-//                        videoViewHolder1.mediaController.setAnchorView(videoViewHolder1.mVideoView);
-//                    }
-//                });
-//            }
-//        });
-
-//        prevPlayingAdapterPosition = playingAdapterPosition;
-//        playingAdapterPosition = videoViewHolder1.getAdapterPosition();
-
-
-        videoViewHolder1.mediaController.setMediaPlayer(videoViewHolder1.mVideoView);
         videoViewHolder1.mVideoView.setVideoURI(uri);
 
         videoViewHolder1.mSeekBar.setMax(videoViewHolder1.mVideoView.getDuration());
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (videoViewHolder1.getAdapterPosition() == playingAdapterPosition)
-                    videoViewHolder1.mSeekBar.setProgress(videoViewHolder1.mVideoView.getCurrentPosition());
-                else if (videoViewHolder1.getAdapterPosition() == prevPlayingAdapterPosition)
-                    videoViewHolder1.mSeekBar.setProgress(0);
-            }
-        }, 0, 100);
-
-        videoViewHolder1.mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    videoViewHolder1.mVideoView.seekTo(progress);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
 
         videoViewHolder1.videoPlayButton.setOnClickListener(new ImageButton.OnClickListener() {
@@ -423,3 +355,76 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 }
+
+//        // Set the media controller buttons
+//        if (videoViewHolder1.mediaController == null) {
+//            videoViewHolder1.mediaController = new MediaController(MainActivity.context);
+//
+//            // Set the videoView that acts as the anchor for the MediaController.
+//            videoViewHolder1.mediaController.setAnchorView(videoViewHolder1.mVideoView);
+//
+//
+//            // Set MediaController for VideoView
+//            videoViewHolder1.mVideoView.setMediaController(videoViewHolder1.mediaController);
+//        }
+//        videoViewHolder1.mVideoView.setVideoURI(uri);
+//
+//        videoViewHolder1.mVideoView.requestFocus();
+//
+//        // When the video file ready for playback.
+//        videoViewHolder1.mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+//
+//            public void onPrepared(MediaPlayer mediaPlayer) {
+//
+//
+//                videoViewHolder1.mVideoView.seekTo(position);
+//                if (position == 0) {
+//                    videoViewHolder1.mVideoView.start();
+//                }
+//
+//                // When video Screen change size.
+//                mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+//                    @Override
+//                    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+//
+//                        // Re-Set the videoView that acts as the anchor for the MediaController
+//                        videoViewHolder1.mediaController.setAnchorView(videoViewHolder1.mVideoView);
+//                    }
+//                });
+//            }
+//        });
+
+//        prevPlayingAdapterPosition = playingAdapterPosition;
+//        playingAdapterPosition = videoViewHolder1.getAdapterPosition();
+
+
+//        videoViewHolder1.mediaController.setMediaPlayer(videoViewHolder1.mVideoView);
+
+//        new Timer().scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                if (videoViewHolder1.getAdapterPosition() == playingAdapterPosition)
+//                    videoViewHolder1.mSeekBar.setProgress(videoViewHolder1.mVideoView.getCurrentPosition());
+//                else if (videoViewHolder1.getAdapterPosition() == prevPlayingAdapterPosition)
+//                    videoViewHolder1.mSeekBar.setProgress(0);
+//            }
+//        }, 0, 100);
+//
+//        videoViewHolder1.mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                if (fromUser) {
+//                    videoViewHolder1.mVideoView.seekTo(progress);
+//                }
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });

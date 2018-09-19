@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected Integer doInBackground(Integer... positions) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity
             protected void onPostExecute(Integer position) {
                 super.onPostExecute(position);
                 myAdapter.notifyItemInserted(position);
+//                myAdapter.notifyDataSetChanged();
             }
         }
 
